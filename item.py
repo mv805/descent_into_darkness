@@ -5,17 +5,19 @@ from typing import List
 class Item:
 
     def __init__(self, name: str, item_type: str) -> None:
-        self.name = name
-        self.item_type = item_type
+        self._name = name
+        self._item_type = item_type
 
-    def info(self):
-        print(f"{self.name}")
-        print("-----------------")
-        print(f"Item Type: {self.item_type}")
-        self._info_details()
+    @property
+    def item_info(self) -> str:
+        details = f"{self._name}\n"
+        details += "-----------------\n"
+        details += f"Item Type: {self._item_type}\n"
+        details += self._get_affix_details()
+        return details
 
     @abstractmethod
-    def _info_details(self):
+    def _get_affix_details(self) -> str:
         pass
 
 
@@ -75,14 +77,15 @@ class Weapon(Item):
         self.affixes = affixes
         self.weapon_type = weapon_type
 
-    def _info_details(self):
-        print(f"Weapon Type: {self.weapon_type}")
+    def _get_affix_details(self) -> str:
+        details = f"Weapon Type: {self.weapon_type}\n"
         for affix in self.affixes:
-            print(affix)
+            details += f"{affix}\n"
+        return details.strip()
 
 
 if __name__ == "__main__":
     sword = Weapon(
         name="Excalibur", weapon_type="Great Axe", affixes=[Damage(100, 55)]
     )
-    sword.info()
+    print(sword.item_info)
