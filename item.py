@@ -4,15 +4,17 @@ from typing import List
 
 class Item:
 
-    def __init__(self, name: str, item_type: str) -> None:
+    def __init__(self, name: str, item_type: str, rarity: str) -> None:
         self._name = name
         self._item_type = item_type
+        self._rarity = rarity
 
     @property
     def item_info(self) -> str:
         details = f"{self._name}\n"
         details += "-----------------\n"
         details += f"Item Type: {self._item_type}\n"
+        details += f"Rarity: {self._rarity}\n"
         details += self._get_affix_details()
         return details
 
@@ -71,9 +73,9 @@ class Damage(Affix):
 class Weapon(Item):
 
     def __init__(
-        self, name: str, weapon_type: str, affixes: List[Affix]
+        self, name: str, rarity: str, weapon_type: str, affixes: List[Affix]
     ) -> None:
-        super().__init__(item_type="Weapon", name=name)
+        super().__init__(item_type="Weapon", name=name, rarity=rarity)
         self.affixes = affixes
         self.weapon_type = weapon_type
 
