@@ -31,6 +31,17 @@ class ItemNameGenerator:
         item_rarity: ItemRarity,
         weapon_type: Optional[str] = None,
     ) -> str:
+        """
+        Generate a name for an item based on its type and rarity.
+
+        Parameters:
+            item_type (ItemType): The type of the item.
+            item_rarity (ItemRarity): The rarity of the item.
+            weapon_type (Optional[str]): The type of the weapon if applicable (default: None).
+
+        Returns:
+            str: The generated name for the item.
+        """
         naming_formats = {
             ItemType.WEAPON: {
                 ItemRarity.COMMON: (
@@ -63,14 +74,37 @@ class ItemNameGenerator:
                 ItemRarity.TRANSCENDENT: "return this",
             },
             ItemType.MAGIC_RING: {
-                ItemRarity.COMMON: f"{item_type.value}",
-                ItemRarity.SUPERIOR: "return this",
-                ItemRarity.HEROIC: "return this",
-                ItemRarity.DIVINE: "return this",
-                ItemRarity.TRANSCENDENT: "return this",
+                ItemRarity.HEROIC: random.choice(
+                    [
+                        f"{random.choice(self._colors)} Ring",
+                        f"{random.choice(self._verbs)} {random.choice(self._ring_types)}",
+                        f"{random.choice(self._ring_types)} of {random.choice(self._verbs)}",
+                        f"The {random.choice(self._verbs)} {random.choice(self._nouns)}",
+                    ]
+                ),
+                ItemRarity.DIVINE: (
+                    f"The {random.choice(self._colors)} {random.choice(self._ring_types)} of "
+                    f"the {random.choice(self._adjectives)} {random.choice(self._nouns)}"
+                ),
+                ItemRarity.TRANSCENDENT: (
+                    f"{random.choice(self._demon_names)} {random.choice(self._ring_types)}: "
+                    f"Ring of the {random.choice(self._evil_terms)} {random.choice(self._demon_types)}"
+                ),
             },
         }
-        return naming_formats[item_type][item_rarity]
+
+        # There should not be any common or superior rings
+        if item_type == ItemType.MAGIC_RING and (
+            item_rarity == ItemRarity.COMMON
+            or item_rarity == ItemRarity.SUPERIOR
+        ):
+            raise (
+                ValueError(
+                    "Common or superior quality magic rings do not exist."
+                )
+            )
+        else:
+            return naming_formats[item_type][item_rarity]
 
 
 if __name__ == "__main__":
@@ -82,6 +116,7 @@ if __name__ == "__main__":
         word_data = json.load(f)
     weapon_names = word_data["weapon types"]
     rarities = list(ItemRarity)
+    ring_rarities = [ItemRarity.HEROIC, ItemRarity.DIVINE, ItemRarity.TRANSCENDENT]
 
     for i in range(1, ITERATIONS):
         print(
@@ -89,5 +124,13 @@ if __name__ == "__main__":
                 ItemType.WEAPON,
                 random.choice(rarities),
                 random.choice(weapon_names),
+            )
+        )
+    print("------------------")
+    for i in range(1, ITERATIONS):
+        print(
+            name_generator.generate_item_name(
+                ItemType.MAGIC_RING,
+                random.choice(ring_rarities)
             )
         )

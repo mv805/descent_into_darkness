@@ -17,8 +17,8 @@ class Item:
     def item_info(self) -> str:
         details = f"{self._name}\n"
         details += "-----------------\n"
-        details += f"Item Type: {self._item_type.value}\n"
-        details += f"Rarity: {self._rarity.value}\n"
+        details += f"Item Type: {self._item_type}\n"
+        details += f"Rarity: {self._rarity}\n"
         details += self._get_affix_details()
         return details
 
